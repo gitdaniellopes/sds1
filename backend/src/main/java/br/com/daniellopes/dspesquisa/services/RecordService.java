@@ -7,6 +7,8 @@ import br.com.daniellopes.dspesquisa.entities.Record;
 import br.com.daniellopes.dspesquisa.repositories.GameRepository;
 import br.com.daniellopes.dspesquisa.repositories.RecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,5 +35,13 @@ public class RecordService {
 
         Record recordSave = recordRepository.save(record);
         return new RecordDTO(recordSave);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<RecordDTO> findByMoment(Instant minDate, Instant maxDate,
+                                        PageRequest pageRequest) {
+
+        return recordRepository.findByMoment(minDate, maxDate, pageRequest)
+                .map(RecordDTO::new);
     }
 }
